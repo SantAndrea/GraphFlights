@@ -1,6 +1,15 @@
-LOAD CSV WITH HEADERS FROM "file:///data.csv" AS data
+LOAD CSV WITH HEADERS FROM "file:///aeroporto.csv" AS aeroporto
+MERGE(a:Aeroporto{codice_iata:aeroporto.Codice_IATA,
+nome:aeroporto.Nome_Commerciale,comune:aeroporto.Comune,utilizzo:aeroporto.Tipo_Utilizzo})
 
-MERGE(a:Aeroporto{codice_icao:data.Codice_ICAO,codice_iata:data.Codice_IATA,
-nome:data.Nome_Commerciale,comune:data.Comune,utilizzo:data.Tipo_Utilizzo})
+LOAD CSV WITH HEADERS FROM "file:///volo.csv" AS volo
+MERGE(b:Volo{volo:volo.id,orario_partenza:volo.ora_p,orario_arrivo:volo.ora_a})
 
-MERGE(b:Volo{id:data.id,orario_partenza:data.ora_p,orario_arrivo:data.ora_a})
+LOAD CSV WITH HEADERS FROM "file:///viaggio.csv" AS viaggio
+MERGE(c:Viaggio{data:viaggio.data,id_volo:viaggio.id_volo,id_pilota:viaggio.id_pilota})
+
+LOAD CSV WITH HEADERS FROM "file:///aeromobile.csv" AS aereo
+MERGE(d:Aereo{matricola_aereo:aereo.matricola_aereo,modello:aereo.modello,anno_acquisto:aereo.anno_acquisto})
+
+LOAD CSV WITH HEADERS FROM "file:///pilota.csv" AS pilota
+MERGE(e:Pilota{matricola:pilota.matricola,cognome:pilota.cognome,nome:pilota.nome,eta:pilota.eta})
