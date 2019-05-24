@@ -1,0 +1,6 @@
+LOAD CSV WITH HEADERS FROM "file:///data.csv" AS data
+
+MERGE(a:Aeroporto{codice_icao:data.Codice_ICAO,codice_iata:data.Codice_IATA,
+nome:data.Nome_Commerciale,comune:data.Comune,utilizzo:data.Tipo_Utilizzo})
+
+MERGE(b:Volo{id:data.id,orario_partenza:data.ora_p,orario_arrivo:data.ora_a})
