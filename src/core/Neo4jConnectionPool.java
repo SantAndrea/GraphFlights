@@ -36,11 +36,10 @@ public class Neo4jConnectionPool implements AutoCloseable{
 				public String execute(Transaction tx) {
 					StatementResult result = tx.run(command);
 					
-					return result.single().get(0).asString();
+					return result.toString();
 				}
 				
 			});
-			
 			
 		}catch(Exception e){
 			e.printStackTrace();

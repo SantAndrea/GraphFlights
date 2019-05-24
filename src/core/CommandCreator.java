@@ -33,6 +33,7 @@ public class CommandCreator {
 	/**Crea la stringa di comando per generare un nodo a partire da un CSV precaricato sul database.
 	 * Nel caso in cui la lista dei parametri non ha la stesa dimensione della lista degli attributi del csv
 	 * viene scelto la dimensione più bassa, creando parzialmente il nodo.
+	 * @param path percorso dove è allocato il csv
 	 * @param nodeName il nome del nodo
 	 * @param tableName il nome della tabella
 	 * @param csvVariable il nome della variabile del csv
@@ -44,20 +45,22 @@ public class CommandCreator {
 		
 		int maxSize = 0;
 		
+		String command = "";
+		
 		if(paramsCSV.size()<=paramsNode.size()){
 			maxSize = paramsCSV.size();
 		}else{
 			maxSize = paramsNode.size();
 		}
-			String command = "MERGE("+nodeName+":"+tableName+"{";
+			 command = command+"CREATE("+nodeName+":"+tableName+"{";
 
-			for(int i=0; i<maxSize;i++){
+		for(int i=0; i<maxSize;i++){
 				
-				command = command+paramsNode.get(i)+" : "+csvVariable+"."+paramsCSV.get(i);
+			command = command+paramsNode.get(i)+" : "+csvVariable+"."+paramsCSV.get(i);
 				
-				if(maxSize>1){
-					command = command+", ";
-				}
+			if(maxSize>1){
+				command = command+", ";
+			}
 
 			}
 		
@@ -72,20 +75,17 @@ public class CommandCreator {
 	 * @param path il percorso in cui è presente il file.
 	 * @param csvVariable il nome della variabile csv
 	 * @return La stringa contente il comando.*/
-/**	public String loadCSVH(String path,String csvVariable){
-		return "LOAD CSV WITH HEADERS FROM "+path+" AS "+csvVariable;
+	public String loadCSVH(String path,String csvVariable){
+		return "LOAD CSV WITH HEADERS FROM "+path+" AS "+csvVariable+ " RETURN "+ csvVariable;
 	}
-**/	
+
 	
 	/**Crea la stringa di comando per caricare un file csv all'interno del database Neo4j.
 	 * @param path il percorso in cui è presente il file.
 	 * @param csvVariable il nome della variabile csv
 	 * @return La stringa contente il comando.*/
-/**	public String loadCSV(String path,String csvVariable){
-		return "LOAD CSV FROM "+path+" AS "+csvVariable;
+	public String loadCSV(String path,String csvVariable){
+		return "LOAD CSV FROM "+path+" AS "+csvVariable+ " RETURN "+ csvVariable;
 	}
-**/	
-
-
 
 }
