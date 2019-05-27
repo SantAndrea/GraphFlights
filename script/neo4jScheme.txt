@@ -25,9 +25,7 @@ WHERE a.codice_iata = b.aeroporto_arrivo
 MERGE (a)-[r:Arrivo]->(b)
 RETURN a,b;
 
-
-//Da rivedere
-
+//Da rivedere verso relazione
 MATCH (b:Volo),(d:Aereo)
 WHERE b.aeromobile_volo = d.matricola_aereo
 MERGE (b)-[r:Aereo_Volo]->(d)
