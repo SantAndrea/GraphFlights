@@ -1,0 +1,6 @@
+QUERY EXAMPLE
+
+
+MATCH (p:Pilota),(v:Volo),(a:Aeroporto)
+WHERE p.nome="Ernesto" AND v.id_pilota = p.matricola AND v.aeroporto_arrivo = a.codice_iata AND a.comune = "NAPOLI"
+RETURN p,v,a;

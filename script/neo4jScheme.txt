@@ -35,11 +35,3 @@ RETURN e,b;
 
 
 
-//INUTILIZZATI
-MATCH(b:Volo),(c:Viaggio)
-WHERE b.volo = c.id_volo
-MERGE (b)-[r:Volo_Viaggio]->(c)
-RETURN b,c;
-
-
-
