@@ -3,11 +3,14 @@ MERGE(a:Aeroporto{codice_iata:aeroporto.Codice_IATA,
 nome:aeroporto.Nome_Commerciale,comune:aeroporto.Comune,utilizzo:aeroporto.Tipo_Utilizzo})
 
 LOAD CSV WITH HEADERS FROM "file:///volo.csv" AS volo
-MERGE(b:Volo{volo:volo.id,orario_partenza:volo.ora_p,orario_arrivo:volo.ora_a,
-aeroporto_partenza:volo.aeroporto_partenza,aeroporto_arrivo:volo.aeroporto_arrivo,aeromobile_volo:volo.aeromobile_volo})
-
-LOAD CSV WITH HEADERS FROM "file:///viaggio.csv" AS viaggio
-MERGE(c:Viaggio{data:viaggio.data,id_volo:viaggio.id_volo,id_pilota:viaggio.id_pilota,})
+MERGE(b:Volo{id_volo:volo.id,
+orario_partenza:volo.ora_p,
+orario_arrivo:volo.ora_a,
+data:volo.data,
+aeroporto_partenza:volo.aeroporto_partenza,
+aeroporto_arrivo:volo.aeroporto_arrivo,
+aeromobile_volo:volo.aeromobile_volo,
+id_pilota:volo.id_pilota})
 
 LOAD CSV WITH HEADERS FROM "file:///aeromobile.csv" AS aereo
 MERGE(d:Aereo{matricola_aereo:aereo.matricola_aereo,modello:aereo.modello,anno_acquisto:aereo.anno_acquisto})
@@ -25,11 +28,18 @@ WHERE a.codice_iata = b.aeroporto_arrivo
 MERGE (a)-[r:Arrivo]->(b)
 RETURN a,b;
 
-//Da rivedere verso relazione
-MATCH (b:Volo),(d:Aereo)
+MATCH (d:Aereo),(b:Volo)
 WHERE b.aeromobile_volo = d.matricola_aereo
-MERGE (b)-[r:Aereo_Volo]->(d)
+MERGE (d)-[r:Aereo_Volo]->(b)
 RETURN b,d;
 
+MATCH(b:Volo),(c:Viaggio)
+WHERE b.volo = c.id_volo
+MERGE (b)-[r:Volo_Viaggio]->(c)
+RETURN b,c;
 
+MATCH(e:Pilota),(c:Viaggio)
+WHERE e.matricola = c.id_pilota
+MERGE (e)-[r:Pilota_Viaggio]->(c)
+RETURN e,c;
 
