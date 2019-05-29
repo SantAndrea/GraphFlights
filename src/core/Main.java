@@ -1,9 +1,9 @@
 package core;
+import jdbc.Neo4jConnectionPool;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.neo4j.driver.v1.Driver;
 
-import org.neo4j.driver.v1.*;
+import controller.CommandCreator;
 
 public class Main {
 
@@ -14,21 +14,11 @@ public class Main {
 		
 		Neo4jConnectionPool ncp = new Neo4jConnectionPool();
 		CommandCreator cc = new CommandCreator();
-		
-		String path = " 'file:///aeroporti.csv' ";
-		
 		Driver driver = ncp.connection();
 		
-		List<String> params = new ArrayList<String>();
-		params.add("Scadenza");
+		String matcher = cc.matchAll();
 		
-		String load = cc.loadCSVH(path, DB_NAME);
-		String matcher = cc.createNodeCSV("l"
-				, "lol", DB_NAME, params, params);
-		
-		ncp.executeTransaction(driver,load);
-		ncp.close();
-		
+		ncp.executeTransaction(driver, matcher);
 
 	}
 

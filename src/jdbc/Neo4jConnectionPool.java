@@ -1,4 +1,4 @@
-package core;
+package jdbc;
 import org.neo4j.driver.v1.*;
 
 /** Gestore delle operazioni fondamentali su un database Neo4j.
@@ -35,11 +35,11 @@ public class Neo4jConnectionPool implements AutoCloseable{
 				@Override
 				public String execute(Transaction tx) {
 					StatementResult result = tx.run(command);
-					
 					return result.toString();
 				}
 				
 			});
+			
 			
 		}catch(Exception e){
 			e.printStackTrace();
