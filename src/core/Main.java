@@ -19,7 +19,7 @@ public class Main {
 		String matcher = cc.matchAll();
 		
 		ncp.query(matcher, driver);
-
+		ncp.close();
 	}
 
 }

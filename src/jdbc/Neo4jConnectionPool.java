@@ -1,12 +1,9 @@
 package jdbc;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.neo4j.driver.internal.spi.Connection;
 import org.neo4j.driver.internal.value.NodeValue;
 import org.neo4j.driver.v1.*;
-import org.neo4j.driver.v1.types.Node;
 
 /** Gestore delle operazioni fondamentali su un database Neo4j.
  * L'interfaccia AutoClosable consente di chiudere automaticamente la connessione quando
@@ -61,9 +58,8 @@ public class Neo4jConnectionPool implements AutoCloseable{
 		StatementResult result = driver.session().run(query);
 		while ( result.hasNext() )
 		{
-			
 		    Record record = result.next();
-		    NodeValue n = (NodeValue) record.get( 0 );
+		    NodeValue n = (NodeValue) record.get(0);
 		    list.add(n);
 		}
 		return list;
