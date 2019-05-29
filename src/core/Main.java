@@ -18,7 +18,7 @@ public class Main {
 		
 		String matcher = cc.matchAll();
 		
-		ncp.executeTransaction(driver, matcher);
+		ncp.query(matcher, driver);
 
 	}
 

@@ -31,7 +31,7 @@ public class CommandCreator {
 	
 	
 	public String matchAll(){
-		String command = "MATCH (n) RETURN n;";
+		String command = "match (n) return n";
 		return command;
 	}
 }
