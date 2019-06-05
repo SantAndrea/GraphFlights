@@ -59,8 +59,11 @@ public class Neo4jConnectionPool implements AutoCloseable{
 		while ( result.hasNext() )
 		{
 		    Record record = result.next();
-		    NodeValue n = (NodeValue) record.get(0);
-		    list.add(n);
+		    for(int i=0; i<record.size(); i++){
+			    NodeValue n = (NodeValue) record.get(i);
+			    list.add(n);
+		    }
+
 		}
 		return list;
 	}

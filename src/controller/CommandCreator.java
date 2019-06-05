@@ -34,4 +34,11 @@ public class CommandCreator {
 		String command = "match (n) return n";
 		return command;
 	}
+	
+	public String flightsFromWhere(){
+		String command = "MATCH (p:Pilota {eta: \"41\"})-[:Pilota_Viaggio]->(v:Volo)<-[:Aereo_Volo]-(a:Aereo {anno_acquisto: \"2013\"}), "
+				+ "(v)<-[:Arrivo]-(ap)-[:Partenza]->(others) "
+				+ "RETURN p, a, ap, others AS Volo";
+		return command;
+	}
 }

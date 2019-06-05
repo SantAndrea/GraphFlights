@@ -3,27 +3,52 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+
+import org.neo4j.driver.internal.value.NodeValue;
+import org.neo4j.driver.v1.Driver;
+
+import controller.CommandCreator;
+import jdbc.Neo4jConnectionPool;
+
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 public class MainFrame extends JFrame{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public JTable table;
+	public Container c;
 	
 	public MainFrame (String title){
 		super(title);
 		
+		Neo4jConnectionPool ncp = new Neo4jConnectionPool();
+		CommandCreator cc = new CommandCreator();
+		Driver driver = ncp.connection();
+		
 		setLayout(new BorderLayout());	
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
-		setSize(500,500);
-		setLayout(new BorderLayout());	
+		
+		c = getContentPane();
+
+
 		
 		GridLayout grid = new GridLayout(3, 2);
 		JPanel panel =new JPanel(grid);
 		JPanel panelEmpty = new JPanel();
 		
-		JButton b1 = new JButton("query 1");
+		JButton b1 = new JButton("Voli che sono partiti da un aeroporto in cui sono arrivati voli con piloti di 41 anni e aereo immatricolato nel 2003");
 		JButton b2 = new JButton("query 2");
 		JButton b3 = new JButton("query 3");
 		JButton b4 = new JButton("query 4");
@@ -36,41 +61,82 @@ public class MainFrame extends JFrame{
 		panel.add(panelEmpty);
 		panel.add(panelEmpty);
 		
-		Container c = getContentPane();
+		ActionListener l1 = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String matcher = cc.flightsFromWhere();
+				System.out.println(matcher);
+				
+				List<NodeValue> listQuery = ncp.query(matcher, driver);
+				String[] columnNames = {"Età pilota", "Aeromobile anno acquisto", "Nome aeroporto", "Volo id"};
+				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
+				for(int i=0; i<listQuery.size(); i++){
+					int index = 0;
+					for(int j=0; j<listQuery.size(); j++){
+						
+						if(i==0 && listQuery.get(j).get("eta").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("eta");
+							index++;
+						}
+						if(i==1 && listQuery.get(j).get("anno_acquisto").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("anno_acquisto");
+							index++;
+						}
+						if(i==2 && listQuery.get(j).get("codice_iata").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("codice_iata");
+							index++;
+						}
+						if(i==3 && listQuery.get(j).get("id_volo").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("id_volo");
+							index++;
+						}
+					}
+				}
+				System.out.println(listQuery.iterator().next().get("anno_acquisto"));
+				setTable(columnNames, data);
+			}
+		};
+		
+		b1.addActionListener(l1);
+		
 		
 		
 		//------SETTING TABLE PROP
 		
-		String[] columnNames = {"Proprietà",
-                "Proprietà",
-                "Proprietà",
-                "Proprietà",
-                "Proprietà"};
+		String[] columnNames = {"---",
+                "---",
+                "---",
+                "---",
+                "---"};
 		
 		/*
 		 * Its data is initialized and stored in a two-dimensional Object array:
 		 */
+		
 		Object[][] data = {
-			    {"Kathy", "Smith",
-			     "Snowboarding", new Integer(5), new Boolean(false)},
-			    {"John", "Doe",
-			     "Rowing", new Integer(3), new Boolean(true)},
-			    {"Sue", "Black",
-			     "Knitting", new Integer(2), new Boolean(false)},
-			    {"Jane", "White",
-			     "Speed reading", new Integer(20), new Boolean(true)},
-			    {"Joe", "Brown",
-			     "Pool", new Integer(10), new Boolean(false)},    
+			    {"---", "---",
+			     "---", "---", "---"},
+			    {"---", "---",
+				     "---", "---", "---"},
+			    {"---", "---",
+					     "---", "---", "---"},
+			    {"---", "---",
+						     "---", "---", "---"},
+			    {"---", "---",
+							 "---", "---", "---"},    
 			};
 		
-		JTable table = new JTable(data, columnNames);
+
 		
+		this.table = new JTable(data, columnNames);
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 
 		JPanel panelForTable = new JPanel();
 		
-	//	panelForTable.add(table.getTableHeader());
+		panelForTable.add(table.getTableHeader());
 		panelForTable.add(scrollPane);
 		
 		//-----------------------------------------------------
@@ -78,6 +144,21 @@ public class MainFrame extends JFrame{
 		c.add(panelForTable, BorderLayout.CENTER);
 		c.add(panel, BorderLayout.SOUTH);
 				
+	}
+	
+	public void setTable(String[] columns, Object[][] data){
+		table.setModel(new DefaultTableModel(data.length, columns.length));
+		JTableHeader th = table.getTableHeader();
+		TableColumnModel tcm = th.getColumnModel();
+		for(int i=0; i<columns.length; i++){
+			TableColumn tc = tcm.getColumn(i);
+			tc.setHeaderValue( columns[i] );
+			for(int j=0; j<data.length; j++){
+				table.setValueAt(data[i][j], j, i);
+				th.repaint();
+			}
+			
+		}
 	}
 
 }
