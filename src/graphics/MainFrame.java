@@ -49,7 +49,7 @@ public class MainFrame extends JFrame{
 		JPanel panelEmpty = new JPanel();
 		
 		JButton b1 = new JButton("Voli che sono partiti da un aeroporto in cui sono arrivati voli con piloti di 41 anni e aereo immatricolato nel 2003");
-		JButton b2 = new JButton("query 2");
+		JButton b2 = new JButton("Piloti che hanno viaggiato con un Boing 777-300 che sono partiti da Napoli e non sono arrivati a Roma");
 		JButton b3 = new JButton("query 3");
 		JButton b4 = new JButton("query 4");
 		
@@ -67,7 +67,7 @@ public class MainFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				String matcher = cc.flightsFromWhere();
-				System.out.println(matcher);
+				System.out.println("q1");
 				
 				List<NodeValue> listQuery = ncp.query(matcher, driver);
 				String[] columnNames = {"Età pilota", "Aeromobile anno acquisto", "Nome aeroporto", "Volo id"};
@@ -94,7 +94,6 @@ public class MainFrame extends JFrame{
 						}
 					}
 				}
-				System.out.println(listQuery.iterator().next().get("anno_acquisto"));
 				setTable(columnNames, data);
 			}
 		};
@@ -102,6 +101,36 @@ public class MainFrame extends JFrame{
 		b1.addActionListener(l1);
 		
 		
+		ActionListener l2 = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String matcher = cc.pilotFlightWithModel();
+				System.out.println("q2");
+				
+				List<NodeValue> listQuery = ncp.query(matcher, driver);
+				String[] columnNames = {"Modello aereo", "Nome Pilota"};
+				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
+				for(int i=0; i<listQuery.size(); i++){
+					int index = 0;
+					for(int j=0; j<listQuery.size(); j++){
+						
+						if(i==0 && listQuery.get(j).get("modello").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("modello");
+							index++;
+						}
+						if(i==1 && listQuery.get(j).get("nome").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("nome");
+							index++;
+						}
+					}
+				}
+				setTable(columnNames, data);
+			}
+		};
+		
+		b2.addActionListener(l2);
 		
 		//------SETTING TABLE PROP
 		

@@ -41,4 +41,12 @@ public class CommandCreator {
 				+ "RETURN p, a, ap, others AS Volo";
 		return command;
 	}
+	
+	public String pilotFlightWithModel() {
+		String command = "match (v:Volo)<-[:Pilota_Viaggio]-(p:Pilota), (v)<-[:Aereo_Volo]-(a:Aereo), (ap:Aeroporto {comune :\"NAPOLI\"})"
+				+ ", (app:Aeroporto {comune : \"CIAMPINO\"})"
+				+ " where a.modello = \"Boeing 777-300\" and v.id_pilota = p.matricola and (v)<-[:Partenza]-(app)"
+				+ "and not (v)<-[:Arrivo]-(ap) return a, p";
+		return command;
+	}
 }
