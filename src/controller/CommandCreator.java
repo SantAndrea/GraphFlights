@@ -49,4 +49,22 @@ public class CommandCreator {
 				+ "and not (v)<-[:Arrivo]-(ap) return a, p";
 		return command;
 	}
+	
+	public String aereoByVoloDateAndDeparture(){
+		String command = "match (a:Aereo)<-[:Aereo_Volo]-(v:Volo)"
+				+ " where v.data=\"5\06\2018\" and v.aeroporto_partenza=\"NAP\""
+				+ " return a";
+		return command;
+	}
+	
+	public String aeromobileByVolo(){
+		String command = "match(v:Volo)<-[r:Arrivo]-(ar:Aeroporto)"
+				+ " where v.aeroporto_partenza = \"NAP\" "
+				+ " return v";
+				
+		return command;
+	}
+	
+	
+
 }
