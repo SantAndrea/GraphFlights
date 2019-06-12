@@ -71,7 +71,7 @@ public class MainFrame extends JFrame{
 				
 				List<NodeValue> listQuery = ncp.query(matcher, driver);
 				String[] columnNames = {"Età pilota", "Aeromobile anno acquisto", "Nome aeroporto", "Volo id"};
-				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
+				Object[][] data = new Object[listQuery.size()/4][listQuery.size()];
 				for(int i=0; i<listQuery.size(); i++){
 					int index = 0;
 					for(int j=0; j<listQuery.size(); j++){
@@ -111,7 +111,7 @@ public class MainFrame extends JFrame{
 				
 				List<NodeValue> listQuery = ncp.query(matcher, driver);
 				String[] columnNames = {"Modello aereo", "Nome Pilota"};
-				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
+				Object[][] data = new Object[listQuery.size()/2][listQuery.size()];
 				for(int i=0; i<listQuery.size(); i++){
 					int index = 0;
 					for(int j=0; j<listQuery.size(); j++){
@@ -143,15 +143,14 @@ public class MainFrame extends JFrame{
 				System.out.println("q3");
 				
 				List<NodeValue> listQuery = ncp.query(matcher, driver);
-				String[] columnNames = {"anno_acquisto","modello","matricola_aereo"};
-				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
-		
+				String[] columnNames = {"Anno acquisto","Modello","Matricola"};
+				Object[][] data = new Object[listQuery.size()][listQuery.size()];
 				for(int i=0; i<listQuery.size(); i++){
 					int index = 0;
 					for(int j=0; j<listQuery.size(); j++){
 						
-						if(i==0 && listQuery.get(j).get("anno acquisto").toString() != "NULL"){
-							data[i][index] = listQuery.get(j).get("anno acquisto");
+						if(i==0 && listQuery.get(j).get("anno_acquisto").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("anno_acquisto");
 							index++;
 						}
 						
@@ -181,9 +180,9 @@ public class MainFrame extends JFrame{
 				System.out.println("q3");
 				
 				List<NodeValue> listQuery = ncp.query(matcher, driver);
-				String[] columnNames = {"data","id_volo","aeroporto_arrivo","orario_partenza","aeroporto_partenza",
-						"orario_arrivo","id_pilota","aeromobile_volo"};
-				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
+				String[] columnNames = {"Data","Id volo","Aeroporto arrivo","Orario partenza","Aeroporto partenza",
+						"Orario arrivo","Id pilota","Modello aereo"};
+				Object[][] data = new Object[listQuery.size()][listQuery.size()];
 				
 				for(int i=0; i<listQuery.size(); i++){
 					int index = 0;
