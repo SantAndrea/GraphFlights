@@ -50,8 +50,8 @@ public class MainFrame extends JFrame{
 		
 		JButton b1 = new JButton("Voli che sono partiti da un aeroporto in cui sono arrivati voli con piloti di 41 anni e aereo immatricolato nel 2003");
 		JButton b2 = new JButton("Piloti che hanno viaggiato con un Boing 777-300 che sono partiti da Napoli e non sono arrivati a Roma");
-		JButton b3 = new JButton("query 3");
-		JButton b4 = new JButton("query 4");
+		JButton b3 = new JButton("Aereo di un volo partito nella data 5/06/2018 ed aeroporto di partenza Napoli");
+		JButton b4 = new JButton("Volo da aeroporto di Partenza Napoli");
 		
 		
 		panel.add(b1);
@@ -132,6 +132,110 @@ public class MainFrame extends JFrame{
 		
 		b2.addActionListener(l2);
 		
+		
+		ActionListener l3 = new ActionListener() {
+			
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String matcher = cc.aereoByVoloDateAndDeparture();
+				System.out.println("q3");
+				
+				List<NodeValue> listQuery = ncp.query(matcher, driver);
+				String[] columnNames = {"anno_acquisto","modello","matricola_aereo"};
+				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
+		
+				for(int i=0; i<listQuery.size(); i++){
+					int index = 0;
+					for(int j=0; j<listQuery.size(); j++){
+						
+						if(i==0 && listQuery.get(j).get("anno acquisto").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("anno acquisto");
+							index++;
+						}
+						
+						if(i==1 && listQuery.get(j).get("modello").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("modello");
+							index++;
+						}
+						
+						if(i==2 && listQuery.get(j).get("matricola_aereo").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("matricola_aereo");
+							index++;
+						}
+						
+					}
+				}
+				setTable(columnNames, data);
+				
+			}};
+		b3.addActionListener(l3);
+		
+		
+		ActionListener l4 = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String matcher = cc.voloByAeroporto();
+				System.out.println("q3");
+				
+				List<NodeValue> listQuery = ncp.query(matcher, driver);
+				String[] columnNames = {"data","id_volo","aeroporto_arrivo","orario_partenza","aeroporto_partenza",
+						"orario_arrivo","id_pilota","aeromobile_volo"};
+				Object[][] data = new Object[listQuery.size()/columnNames.length][listQuery.size()];
+				
+				for(int i=0; i<listQuery.size(); i++){
+					int index = 0;
+					for(int j=0; j<listQuery.size(); j++){
+						
+						if(i==0 && listQuery.get(j).get("data").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("data");
+							index++;
+						}
+						
+						if(i==1 && listQuery.get(j).get("id_volo").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("id_volo");
+							index++;
+						}
+						
+						if(i==2 && listQuery.get(j).get("aeroporto_arrivo").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("aeroporto_arrivo");
+							index++;
+						}
+						
+						if(i==3 && listQuery.get(j).get("orario_partenza").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("orario_partenza");
+							index++;
+						}
+
+						if(i==4 && listQuery.get(j).get("aeroporto_partenza").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("aeroporto_partenza");
+							index++;
+						}
+						
+						if(i==5 && listQuery.get(j).get("orario_arrivo").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("orario_arrivo");
+							index++;
+						}
+						
+						if(i==6 && listQuery.get(j).get("id_pilota").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("id_pilota");
+							index++;
+						}
+						
+						if(i==7 && listQuery.get(j).get("aeromobile_volo").toString() != "NULL"){
+							data[i][index] = listQuery.get(j).get("aeromobile_volo");
+							index++;
+						}
+						
+						
+					}
+				}
+				setTable(columnNames, data);
+				
+			}};
+		b4.addActionListener(l4);
 		//------SETTING TABLE PROP
 		
 		String[] columnNames = {"---",

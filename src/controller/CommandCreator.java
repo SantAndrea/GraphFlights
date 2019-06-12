@@ -53,11 +53,11 @@ public class CommandCreator {
 	public String aereoByVoloDateAndDeparture(){
 		String command = "match (a:Aereo)<-[:Aereo_Volo]-(v:Volo)"
 				+ " where v.data=\"5\06\2018\" and v.aeroporto_partenza=\"NAP\""
-				+ " return a";
+				+ " return a;";
 		return command;
 	}
 	
-	public String aeromobileByVolo(){
+	public String voloByAeroporto(){
 		String command = "match(v:Volo)<-[r:Arrivo]-(ar:Aeroporto)"
 				+ " where v.aeroporto_partenza = \"NAP\" "
 				+ " return v";
