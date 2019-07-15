@@ -1,8 +1,11 @@
 package graphics;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -15,11 +18,15 @@ import controller.CommandCreator;
 import jdbc.Neo4jConnectionPool;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 public class MainFrame extends JFrame{
@@ -45,21 +52,51 @@ public class MainFrame extends JFrame{
 
 		
 		GridLayout grid = new GridLayout(3, 2);
-		JPanel panel =new JPanel(grid);
+		JPanel panelExample =new JPanel(grid);
 		JPanel panelEmpty = new JPanel();
+		JPanel mainPanel = new JPanel(new BorderLayout());
 		
 		JButton b1 = new JButton("Voli che sono partiti da un aeroporto in cui sono arrivati voli con piloti di 41 anni e aereo immatricolato nel 2003");
 		JButton b2 = new JButton("Piloti che hanno viaggiato con un Boing 777-300 che sono partiti da Napoli e non sono arrivati a Roma");
 		JButton b3 = new JButton("Aereo di un volo partito nella data 5/06/2018 ed aeroporto di partenza Napoli");
 		JButton b4 = new JButton("Volo da aeroporto di Partenza Napoli");
+
+		//Parte parametrica
+		JPanel paramSearch = new JPanel();
 		
+		JLabel cercaVoloLabel = new JLabel("Cerca Volo                     ");
+		JLabel partenzaDaLabel = new JLabel("Partenza da:");
+		JComboBox<String> partenzaVolo = new JComboBox<>();
+		partenzaVolo.addItem("NAP");
+		partenzaVolo.addItem("CIA");
+		partenzaVolo.addItem("LIN");
+		partenzaVolo.addItem("MXP");
+		JLabel arrivoALabel = new JLabel("Arrivo a:");
+		JComboBox<String> arrivoVolo = new JComboBox<>();
+		arrivoVolo.addItem("NAP");
+		arrivoVolo.addItem("CIA");
+		arrivoVolo.addItem("LIN");
+		arrivoVolo.addItem("MXP");
+		JButton search = new JButton("Ricerca Volo");
+		JLabel inDataLabel = new JLabel("In Data:");
+		JTextArea ricercaData = new JTextArea("gg/mm/yy",1,6);
 		
-		panel.add(b1);
-		panel.add(b2);
-		panel.add(b3);
-		panel.add(b4);
-		panel.add(panelEmpty);
-		panel.add(panelEmpty);
+		paramSearch.add(cercaVoloLabel);
+		paramSearch.add(partenzaDaLabel);
+		paramSearch.add(partenzaVolo);
+		paramSearch.add(arrivoALabel);
+		paramSearch.add(arrivoVolo);
+		paramSearch.add(inDataLabel);
+		paramSearch.add(ricercaData);
+		paramSearch.add(search);
+		
+		panelExample.add(b1);
+		panelExample.add(b2);
+		panelExample.add(b3);
+		panelExample.add(b4);
+	
+		mainPanel.add(panelExample, BorderLayout.NORTH);
+		mainPanel.add(paramSearch, BorderLayout.SOUTH);
 		
 		ActionListener l1 = new ActionListener() {
 			
@@ -237,6 +274,86 @@ public class MainFrame extends JFrame{
 		b4.addActionListener(l4);
 		//------SETTING TABLE PROP
 		
+		ActionListener searchButtonListener = new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selectedPartenza = (String)partenzaVolo.getSelectedItem();
+				String selectedArrivo = (String)arrivoVolo.getSelectedItem();
+				String dataVolo = ricercaData.getText();
+				
+				String command = cc.searchVolo(selectedPartenza, selectedArrivo, dataVolo);
+				System.out.println(command);
+				try{
+					List<NodeValue> listQuery = ncp.query(command, driver);
+					
+					if(listQuery.isEmpty()){
+						JOptionPane.showMessageDialog(null,"La query non ha prodotto risultati.");
+					}else{
+						String[] columnNames = {"Data","Id volo","Aeroporto arrivo","Orario partenza","Aeroporto partenza",
+								"Orario arrivo","Id pilota","Modello aereo"};
+						Object[][] data = new Object[listQuery.size()][listQuery.size()];
+						
+						for(int i=0; i<listQuery.size(); i++){
+							int index = 0;
+							for(int j=0; j<listQuery.size(); j++){
+								
+								if(i==0 && listQuery.get(j).get("data").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("data");
+									index++;
+								}
+								
+								if(i==1 && listQuery.get(j).get("id_volo").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("id_volo");
+									index++;
+								}
+								
+								if(i==2 && listQuery.get(j).get("aeroporto_arrivo").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("aeroporto_arrivo");
+									index++;
+								}
+								
+								if(i==3 && listQuery.get(j).get("orario_partenza").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("orario_partenza");
+									index++;
+								}
+
+								if(i==4 && listQuery.get(j).get("aeroporto_partenza").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("aeroporto_partenza");
+									index++;
+								}
+								
+								if(i==5 && listQuery.get(j).get("orario_arrivo").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("orario_arrivo");
+									index++;
+								}
+								
+								if(i==6 && listQuery.get(j).get("id_pilota").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("id_pilota");
+									index++;
+								}
+								
+								if(i==7 && listQuery.get(j).get("aeromobile_volo").toString() != "NULL"){
+									data[i][index] = listQuery.get(j).get("aeromobile_volo");
+									index++;
+								}
+								
+								
+							}
+						}
+						setTable(columnNames, data);
+					}
+					
+				}catch(Exception e1){
+					
+						JOptionPane.showMessageDialog(null,"Non ci sono nodi nel database con questi parametri.");
+						
+				}
+				
+			}};
+		search.addActionListener(searchButtonListener);
+		
+		
 		String[] columnNames = {"---",
                 "---",
                 "---",
@@ -274,7 +391,7 @@ public class MainFrame extends JFrame{
 		//-----------------------------------------------------
 		
 		c.add(panelForTable, BorderLayout.CENTER);
-		c.add(panel, BorderLayout.SOUTH);
+		c.add(mainPanel, BorderLayout.SOUTH);
 				
 	}
 	

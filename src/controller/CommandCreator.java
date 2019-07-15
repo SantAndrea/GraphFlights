@@ -64,6 +64,17 @@ public class CommandCreator {
 		return command;
 	}
 	
+	public String searchVolo(String partenza, String arrivo, String data){
+		String command = "MATCH (a:Aeroporto)-[p:Partenza]->(v:Volo)<-[r:Arrivo]-(ar:Aeroporto)"
+				+ " where v.aeroporto_partenza = \""+partenza+"\" and"
+				+ " v.aeroporto_arrivo = \""+arrivo+"\" and"
+				+ " v.data = \""+data+"\" "
+				+ " return v";
+		return command;
+		
+		
+	}
+	
 	
 
 }
