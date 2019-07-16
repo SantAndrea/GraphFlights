@@ -284,17 +284,18 @@ public class MainFrame extends JFrame{
 				
 				String command = cc.searchVolo(selectedPartenza, selectedArrivo, dataVolo);
 				System.out.println(command);
-				try{
-					List<NodeValue> listQuery = ncp.query(command, driver);
+				String matcher = cc.searchVolo(selectedPartenza, selectedArrivo, dataVolo);
+					
+				List<NodeValue> listQuery = ncp.query(matcher, driver);
+				//	List<NodeValue> listQuery = ncp.query(command, driver);
 					
 					if(listQuery.isEmpty()){
 						JOptionPane.showMessageDialog(null,"La query non ha prodotto risultati.");
 					}else{
 						String[] columnNames = {"Data","Id volo","Aeroporto arrivo","Orario partenza","Aeroporto partenza",
 								"Orario arrivo","Id pilota","Modello aereo"};
-						Object[][] data = new Object[listQuery.size()][listQuery.size()];
-						
-						for(int i=0; i<listQuery.size(); i++){
+						Object[][] data = new Object[listQuery.size()+columnNames.length][listQuery.size()+columnNames.length];
+						for(int i=0; i<listQuery.size()+columnNames.length; i++){
 							int index = 0;
 							for(int j=0; j<listQuery.size(); j++){
 								
@@ -304,6 +305,7 @@ public class MainFrame extends JFrame{
 								}
 								
 								if(i==1 && listQuery.get(j).get("id_volo").toString() != "NULL"){
+									System.out.println("qua qua"+ listQuery.get(j).get("id_volo"));
 									data[i][index] = listQuery.get(j).get("id_volo");
 									index++;
 								}
@@ -343,12 +345,6 @@ public class MainFrame extends JFrame{
 						}
 						setTable(columnNames, data);
 					}
-					
-				}catch(Exception e1){
-					
-						JOptionPane.showMessageDialog(null,"Non ci sono nodi nel database con questi parametri.");
-						
-				}
 				
 			}};
 		search.addActionListener(searchButtonListener);
@@ -382,7 +378,6 @@ public class MainFrame extends JFrame{
 		this.table = new JTable(data, columnNames);
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-
 		JPanel panelForTable = new JPanel();
 		
 		panelForTable.add(table.getTableHeader());
